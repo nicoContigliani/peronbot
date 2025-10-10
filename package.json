@@ -1,10 +1,10 @@
 {
   "name": "bototo",
   "version": "1.0.0",
-  "main": "baileys-bot.js",
+  "main": "index.js",
   "type": "module", 
   "scripts": {
-    "start": "node baileys-bot.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
