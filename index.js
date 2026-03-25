@@ -1,10 +1,12 @@
 // index.js (El archivo principal)
 
-import makeWASocket, { useMultiFileAuthState, DisconnectReason, delay } from '@whiskeysockets/baileys';
+import makeWASocketModule from '@whiskeysockets/baileys';
+const { makeWASocket, useMultiFileAuthState, DisconnectReason, delay } = makeWASocketModule;
 import { Boom } from '@hapi/boom';
 import qrcode from 'qrcode';
 import P from 'pino';
 import { handleMessages } from './messageHandler.js'; // Importación de la lógica de respuestas
+import { connectDB } from './db.js';
 
 // Configuración de la sesión
 const SESSION_FOLDER = 'baileys_auth_info'; // Carpeta donde se guardará la sesión
@@ -20,11 +22,22 @@ async function connectToWhatsApp() {
         printQRInTerminal: true,
         logger: P({ level: 'silent' }),
         browser: ['Nico-Bot', 'Chrome', '1.0'],
+        mobile: false,
+        connectTimeoutMs: 60000,
     });
 
     // --- Manejo del Estado de Conexión ---
     sock.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect, qr } = update;
+
+        if (qr) {
+            console.log('\n--- QR Recibido, escanéalo con tu teléfono:');
+            qrcode.toString(qr, { type: 'terminal', small: true }, (err, data) => {
+                if (err) return console.error('Error al generar QR:', err);
+                console.log(data);
+            });
+            console.log('-------------------------------------------');
+        }
 
         if (connection === 'close') {
             let shouldReconnect = (lastDisconnect.error instanceof Boom)
@@ -63,4 +76,18 @@ async function connectToWhatsApp() {
     return sock;
 }
 
-connectToWhatsApp();
+// Iniciar aplicación
+async function main() {
+    try {
+        // Conectar a MongoDB
+        await connectDB();
+        
+        // Conectar a WhatsApp
+        await connectToWhatsApp();
+    } catch (error) {
+        console.error('Error fatal:', error);
+        process.exit(1);
+    }
+}
+
+main();

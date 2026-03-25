@@ -1,17 +1,31 @@
 {
   "name": "bototo",
   "version": "1.0.0",
-  "main": "index.js",
-  "type": "module", 
+  "main": "src/index.js",
+  "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "concurrently \"node src/index.js\" \"cd dashboard && npm start\"",
+    "dev": "concurrently \"node --watch src/index.js\" \"cd dashboard && npm start\"",
+    "dashboard": "cd dashboard && npm start",
+    "install:all": "npm install && cd dashboard && npm install"
   },
-  "keywords": [],
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "baileys",
+    "chatbot",
+    "conversation-tree"
+  ],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "WhatsApp bot with reusable conversation trees and full error handling",
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.20",
+    "@hapi/boom": "^10.0.1",
+    "@whiskeysockets/baileys": "6.6.0",
+    "concurrently": "^8.2.2",
+    "dotenv": "^16.3.1",
+    "mercadopago": "^2.12.0",
+    "mongodb": "^5.9.2",
     "pino": "^10.0.0",
     "qrcode": "^1.5.4"
   }
