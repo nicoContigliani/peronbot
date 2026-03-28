@@ -44,6 +44,13 @@ export const config = {
     // Logging
     logging: {
         level: process.env.LOG_LEVEL || 'info'
+    },
+    
+    // Supabase
+    supabase: {
+        url: process.env.SUPABASE_URL,
+        key: process.env.SUPABASE_KEY,
+        bucket: process.env.SUPABASE_BUCKET || 'files'
     }
 };
 
