@@ -5,11 +5,11 @@
 
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from './config/swagger.js';
-import { fileRoutes } from './routes/index.js';
-import { clerkAuthMiddleware } from './middleware/index.js';
+import swaggerSpec from '@/config/swagger.js';
+import { fileRoutes, sessionRoutes, userRoutes, roleRoutes, permissionRoutes, productRoutes } from '@/routes/index.js';
+import { clerkAuthMiddleware } from '@/middleware/index.js';
 import pino from 'pino';
-import config from './config/env.js';
+import config from '@/config/env.js';
 
 const logger = pino({ level: config.logging.level });
 const app = express();
@@ -38,6 +38,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 
 // API Routes
 app.use('/api/files', fileRoutes);
+app.use('/api/session', sessionRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/roles', roleRoutes);
+app.use('/api/permissions', permissionRoutes);
+app.use('/api/products', productRoutes);
 
 /**
  * @swagger

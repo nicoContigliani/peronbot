@@ -4,21 +4,21 @@
  * Includes command system and conversation management
  */
 import pino from 'pino';
-import config from '../../config/env.js';
+import config from '@/config/env.js';
 import { 
     getOrCreateUser, 
     updateUserConversation, 
     addToConversationHistory 
-} from '../../database/db.js';
+} from '@/database/db.js';
 import { 
     ConversationEngine, 
     ConversationTree, 
     NodeType 
-} from '../../core/ConversationTree.js';
-import { loadAllTrees, getTreeNames } from '../trees/index.js';
+} from '@/core/ConversationTree.js';
+import { loadAllTrees, getTreeNames } from '@/bot/trees/index.js';
 
 // Import cart service
-import { getCartDisplay, addToCart, clearCart, getCartTotal } from '../../cart/cart.js';
+import { getCartDisplay, addToCart, clearCart, getCartTotal } from '@/services/cart/cart.js';
 
 const logger = pino({ level: config.logging.level });
 

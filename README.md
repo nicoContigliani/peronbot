@@ -14,6 +14,12 @@ WhatsApp Bot with Reusable Conversation Trees - Built with Baileys and MongoDB
 - **🧩 Modular Architecture**: Clean, organized code structure
 - **📁 File Processing**: Transform Excel and CSV files to JSON with Supabase integration
 - **☁️ Supabase Storage**: Upload, download, and manage files in Supabase Storage
+- **📧 Email Service**: Send emails using nodemailer with reusable templates
+- **🔌 Socket Module**: Reusable WhatsApp socket connection manager
+- **🗑️ Session Management**: Clear WhatsApp session to force new QR code
+- **👥 User Management**: Full CRUD for users with role assignment
+- **🎭 Role Management**: Create and manage roles with permissions
+- **🔐 Permission System**: Granular permission control with resource and action based access
 
 ## 🚀 Quick Start
 
@@ -63,10 +69,49 @@ bototo/
 │   │   └── index.js          # Module exports
 │   ├── handlers/
 │   │   └── messageHandler.js # Message processing
+│   ├── mail/
+│   │   ├── mail.js           # Email service with nodemailer
+│   │   └── index.js          # Module exports
+│   ├── permissions/
+│   │   ├── controllers/
+│   │   │   └── permission.controller.js  # Permission request handlers
+│   │   ├── dao/
+│   │   │   └── permission.dao.js         # Permission data access
+│   │   ├── dto/
+│   │   │   └── permission.dto.js         # Permission data transfer objects
+│   │   ├── routes/
+│   │   │   └── permission.routes.js      # Permission API endpoints
+│   │   └── index.js                      # Module exports
+│   ├── roles/
+│   │   ├── controllers/
+│   │   │   └── role.controller.js        # Role request handlers
+│   │   ├── dao/
+│   │   │   └── role.dao.js               # Role data access
+│   │   ├── dto/
+│   │   │   └── role.dto.js               # Role data transfer objects
+│   │   ├── routes/
+│   │   │   └── role.routes.js            # Role API endpoints
+│   │   └── index.js                      # Module exports
 │   ├── routes/
 │   │   ├── fileRoutes.js     # File upload and processing API endpoints
+│   │   ├── sessionRoutes.js  # Session management API endpoints
 │   │   └── index.js          # Routes exports
+│   ├── socket/
+│   │   ├── socket.js         # Reusable socket manager
+│   │   └── index.js          # Module exports
+│   ├── users/
+│   │   ├── controllers/
+│   │   │   └── user.controller.js        # User request handlers
+│   │   ├── dao/
+│   │   │   └── user.dao.js               # User data access
+│   │   ├── dto/
+│   │   │   └── user.dto.js               # User data transfer objects
+│   │   ├── routes/
+│   │   │   └── user.routes.js            # User API endpoints
+│   │   └── index.js                      # Module exports
 │   └── index.js              # Main entry point
+├── sessionManager.js         # Session management utility
+├── clearSession.js           # CLI script to clear session
 ├── .env.example              # Environment template
 ├── package.json              # Dependencies
 └── README.md                 # This file
@@ -130,6 +175,12 @@ const myTree = new ConversationTree('myTree', 'My custom conversation')
 | `SUPABASE_URL` | Supabase project URL | - |
 | `SUPABASE_KEY` | Supabase anon/public key | - |
 | `SUPABASE_BUCKET` | Storage bucket name | `files` |
+| `SMTP_HOST` | SMTP server host | `smtp.gmail.com` |
+| `SMTP_PORT` | SMTP port | `587` |
+| `SMTP_SECURE` | Use TLS | `false` |
+| `SMTP_USER` | SMTP username | - |
+| `SMTP_PASS` | SMTP password | - |
+| `SMTP_FROM` | Default sender email | - |
 
 ## 📁 File Processing
 
@@ -295,6 +346,472 @@ SUPABASE_BUCKET=files
 - **users**: User data and conversation state
 - **conversations**: Message history
 - **conversation_trees**: Stored tree definitions
+- **roles**: User roles with permissions
+- **permissions**: Granular permissions with resource and action
+
+## 📧 Email Service
+
+The bot includes a reusable email service using nodemailer with pre-built templates.
+
+### Available Functions
+
+```javascript
+import { 
+    sendMail,
+    sendWelcomeEmail,
+    sendPasswordResetEmail,
+    sendOrderConfirmationEmail,
+    sendNotificationEmail,
+    isConfigured
+} from './src/mail/index.js';
+
+// Send custom email
+await sendMail({
+    to: 'user@example.com',
+    subject: 'Test Email',
+    html: '<h1>Hello!</h1>'
+});
+
+// Send welcome email
+await sendWelcomeEmail('user@example.com', 'Juan');
+
+// Send password reset email
+await sendPasswordResetEmail('user@example.com', 'https://example.com/reset');
+
+// Send order confirmation
+await sendOrderConfirmationEmail('user@example.com', {
+    id: '12345',
+    items: [{ title: 'Product', quantity: 1, unit_price: 100 }],
+    total: 100
+});
+
+// Send notification
+await sendNotificationEmail('user@example.com', 'Alert', 'Important message');
+
+// Check if configured
+if (isConfigured()) {
+    // Send email
+}
+```
+
+### Email Templates
+
+- **Welcome Email**: Green header, personalized greeting
+- **Password Reset**: Blue header, reset button
+- **Order Confirmation**: Orange header, itemized table
+- **Notification**: Purple header, simple message
+
+## 👥 User Management
+
+The bot includes a complete user management system with role-based access control.
+
+### API Endpoints
+
+#### Create User
+```bash
+POST /api/users
+Content-Type: application/json
+
+{
+    "email": "user@example.com",
+    "name": "John Doe",
+    "password": "password123",
+    "roles": ["role_id_1", "role_id_2"],
+    "isActive": true,
+    "metadata": { "phone": "+1234567890" }
+}
+```
+
+#### Get Users with Filters
+```bash
+GET /api/users?email=user&name=John&isActive=true&page=1&limit=20&sortBy=createdAt&sortOrder=desc
+```
+
+#### Get User by ID
+```bash
+GET /api/users/:id
+```
+
+#### Update User
+```bash
+PUT /api/users/:id
+Content-Type: application/json
+
+{
+    "name": "John Updated",
+    "roles": ["role_id_1"],
+    "isActive": true
+}
+```
+
+#### Delete User
+```bash
+# Soft delete (deactivate)
+DELETE /api/users/:id
+
+# Hard delete (permanent)
+DELETE /api/users/:id?hard=true
+```
+
+#### Manage User Roles
+```bash
+# Add role to user
+POST /api/users/:id/roles/:roleId
+
+# Remove role from user
+DELETE /api/users/:id/roles/:roleId
+
+# Get users by role
+GET /api/users/role/:roleId
+```
+
+#### Get User Statistics
+```bash
+GET /api/users/stats
+```
+
+### Programmatic Usage
+
+```javascript
+import { 
+    createUser,
+    getUserById,
+    getUsers,
+    updateUser,
+    deleteUser,
+    addRoleToUser
+} from './src/users/index.js';
+
+// Create user
+const user = await createUser({
+    email: 'user@example.com',
+    name: 'John Doe',
+    roles: ['role_id']
+});
+
+// Get users with filters
+const result = await getUsers({
+    email: 'user',
+    isActive: true,
+    page: 1,
+    limit: 20
+});
+
+// Add role to user
+await addRoleToUser(user._id, 'role_id');
+```
+
+## 🎭 Role Management
+
+Manage user roles with permission assignments.
+
+### API Endpoints
+
+#### Create Role
+```bash
+POST /api/roles
+Content-Type: application/json
+
+{
+    "name": "admin",
+    "description": "Administrator role",
+    "permissions": ["perm_id_1", "perm_id_2"],
+    "isActive": true
+}
+```
+
+#### Get Roles with Filters
+```bash
+GET /api/roles?name=admin&isActive=true&page=1&limit=20
+```
+
+#### Get Role by ID
+```bash
+GET /api/roles/:id
+```
+
+#### Update Role
+```bash
+PUT /api/roles/:id
+Content-Type: application/json
+
+{
+    "name": "admin_updated",
+    "description": "Updated description",
+    "permissions": ["perm_id_1"]
+}
+```
+
+#### Delete Role
+```bash
+# Soft delete
+DELETE /api/roles/:id
+
+# Hard delete
+DELETE /api/roles/:id?hard=true
+```
+
+#### Manage Role Permissions
+```bash
+# Add permission to role
+POST /api/roles/:id/permissions/:permissionId
+
+# Remove permission from role
+DELETE /api/roles/:id/permissions/:permissionId
+
+# Get roles by permission
+GET /api/roles/permission/:permissionId
+```
+
+#### Get Role Statistics
+```bash
+GET /api/roles/stats
+```
+
+### Programmatic Usage
+
+```javascript
+import { 
+    createRole,
+    getRoleById,
+    getRoles,
+    addPermissionToRole
+} from './src/roles/index.js';
+
+// Create role
+const role = await createRole({
+    name: 'admin',
+    description: 'Administrator',
+    permissions: ['perm_id']
+});
+
+// Add permission to role
+await addPermissionToRole(role._id, 'permission_id');
+```
+
+## 🔐 Permission System
+
+Granular permission control with resource and action based access.
+
+### API Endpoints
+
+#### Create Permission
+```bash
+POST /api/permissions
+Content-Type: application/json
+
+{
+    "name": "users:read",
+    "description": "Read user data",
+    "resource": "users",
+    "action": "read",
+    "isActive": true
+}
+```
+
+#### Get Permissions with Filters
+```bash
+GET /api/permissions?name=read&resource=users&action=read&isActive=true&page=1&limit=20
+```
+
+#### Get Permission by ID
+```bash
+GET /api/permissions/:id
+```
+
+#### Update Permission
+```bash
+PUT /api/permissions/:id
+Content-Type: application/json
+
+{
+    "name": "users:write",
+    "description": "Write user data",
+    "resource": "users",
+    "action": "write"
+}
+```
+
+#### Delete Permission
+```bash
+# Soft delete
+DELETE /api/permissions/:id
+
+# Hard delete
+DELETE /api/permissions/:id?hard=true
+```
+
+#### Get Permissions by Resource/Action
+```bash
+# Get permissions by resource
+GET /api/permissions/resource/users
+
+# Get permissions by action
+GET /api/permissions/action/read
+```
+
+#### Get Permission Statistics
+```bash
+GET /api/permissions/stats
+```
+
+### Programmatic Usage
+
+```javascript
+import { 
+    createPermission,
+    getPermissionById,
+    getPermissions,
+    getPermissionsByResource
+} from './src/permissions/index.js';
+
+// Create permission
+const permission = await createPermission({
+    name: 'users:read',
+    resource: 'users',
+    action: 'read'
+});
+
+// Get permissions by resource
+const permissions = await getPermissionsByResource('users');
+```
+
+## ⚡ Performance Optimizations
+
+### Database Indexes
+
+All collections have optimized indexes:
+
+**Users:**
+- `email` (unique)
+- `name`
+- `roles`
+- `isActive`
+- `createdAt`
+- `updatedAt`
+- Compound: `isActive + createdAt`
+
+**Roles:**
+- `name` (unique)
+- `isActive`
+- `createdAt`
+- `permissions`
+- Compound: `isActive + createdAt`
+
+**Permissions:**
+- `name` (unique)
+- `resource`
+- `action`
+- `isActive`
+- `createdAt`
+- Compound: `resource + action`
+
+### Caching Strategy
+
+- In-memory cache with 5-minute TTL
+- LRU eviction when cache reaches max size
+- Automatic cache invalidation on updates/deletes
+- Separate caches for users, roles, and permissions
+
+### Query Optimization
+
+- Projection to exclude sensitive fields (password)
+- Pagination with configurable limits (max 100)
+- Sorting with allowed fields only
+- Compound indexes for common queries
+
+## 🔌 Socket Module
+
+The bot includes a reusable socket module for WhatsApp connection management.
+
+### Usage
+
+```javascript
+import { createSocketManager } from './src/socket/index.js';
+
+// Create socket manager
+const socket = createSocketManager({
+    sessionFolder: 'baileys_auth_info',
+    browserName: 'MyBot',
+    browserVersion: '1.0',
+    maxRetries: 5,
+    retryDelay: 3000
+});
+
+// Set event handlers
+socket.setEventHandlers({
+    onMessage: async (messageData) => {
+        console.log(`Message from ${messageData.jid}: ${messageData.text}`);
+        await socket.sendMessage(messageData.jid, 'Hello!');
+    },
+    onQR: (qr) => {
+        console.log('Scan QR code:', qr);
+    },
+    onConnectionUpdate: (update) => {
+        console.log('Connection status:', update.status);
+    },
+    onError: (error) => {
+        console.error('Error:', error);
+    }
+});
+
+// Connect to WhatsApp
+await socket.connect();
+
+// Send messages
+await socket.sendMessage('1234567890@s.whatsapp.net', 'Hello World!');
+
+// Send button message
+await socket.sendButtons('1234567890@s.whatsapp.net', 'Choose:', [
+    { id: '1', text: 'Option 1' },
+    { id: '2', text: 'Option 2' }
+]);
+
+// Get connection state
+const state = socket.getConnectionState();
+console.log('Connected:', state.isConnected);
+
+// Disconnect when done
+await socket.disconnect();
+```
+
+## 🗑️ Session Management
+
+Manage WhatsApp sessions to force new QR codes when needed.
+
+### NPM Scripts
+
+```bash
+# Check session status
+npm run session:status
+
+# Clear all session files (forces new QR)
+npm run clear-session
+
+# Clear session but keep credentials
+node clearSession.js --keep
+```
+
+### Programmatic Usage
+
+```javascript
+import { 
+    checkSessionStatus,
+    clearSession,
+    clearSessionKeepCredentials
+} from './sessionManager.js';
+
+// Check session status
+const status = await checkSessionStatus();
+console.log('Session exists:', status.exists);
+console.log('Files:', status.files);
+
+// Clear session
+await clearSession();
+
+// Clear but keep credentials
+await clearSessionKeepCredentials();
+```
 
 ## 🔌 API Usage
 
@@ -342,6 +859,10 @@ Created with ❤️
 
 If authentication fails:
 ```bash
+# Clear session using npm script
+npm run clear-session
+
+# Or manually
 rm -rf baileys_auth_info
 npm start
 ```

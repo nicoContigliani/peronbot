@@ -2,7 +2,7 @@
  * Conversation Tree: Main Menu
  * This is the entry point that shows the main options
  */
-import { ConversationTree, NodeType } from '../../core/ConversationTree.js';
+import { ConversationTree, NodeType } from '@/core/ConversationTree.js';
 
 export const mainMenuTree = new ConversationTree('main', 'Main menu - entry point')
     // Root - Main menu

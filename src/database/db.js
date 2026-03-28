@@ -4,7 +4,7 @@
  */
 import { MongoClient, Db, Collection } from 'mongodb';
 import pino from 'pino';
-import config from '../config/env.js';
+import config from '@/config/env.js';
 
 const logger = pino({ level: config.logging.level });
 

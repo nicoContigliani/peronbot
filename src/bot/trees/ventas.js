@@ -2,9 +2,9 @@
  * Conversation Tree: Ventas (Sales)
  * This tree handles all sales-related conversations with real products and payments
  */
-import { ConversationTree, NodeType } from '../../core/ConversationTree.js';
-import { products, getProductsByCategory, formatPrice, getProductsFormatted } from '../../products/products.js';
-import { createPaymentPreference, isConfigured } from '../../pay/mercadoPago.js';
+import { ConversationTree, NodeType } from '@/core/ConversationTree.js';
+import { products, getProductsByCategory, formatPrice } from '@/services/products/products.js';
+import { createPaymentPreference, isConfigured } from '@/services/pay/mercadoPago.js';
 
 // Helper to format products for display
 function formatProductsForCategory(category) {

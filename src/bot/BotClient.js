@@ -7,9 +7,9 @@ const { makeWASocket, useMultiFileAuthState, DisconnectReason, delay, fetchLates
 import { Boom } from '@hapi/boom';
 import qrcode from 'qrcode';
 import pino from 'pino';
-import { config } from '../config/env.js';
-import { connectDB, closeDB } from '../database/db.js';
-import { handleMessages } from './handlers/messageHandler.js';
+import { config } from '@/config/env.js';
+import { connectDB, closeDB } from '@/database/db.js';
+import { handleMessages } from '@/bot/handlers/messageHandler.js';
 
 const logger = pino({ level: config.logging.level });
 

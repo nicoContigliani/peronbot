@@ -220,11 +220,198 @@ const options = {
                             example: 'Error message'
                         }
                     }
+                },
+                UserResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            example: '507f1f77bcf86cd799439011'
+                        },
+                        email: {
+                            type: 'string',
+                            format: 'email',
+                            example: 'user@example.com'
+                        },
+                        name: {
+                            type: 'string',
+                            example: 'John Doe'
+                        },
+                        roles: {
+                            type: 'array',
+                            items: {
+                                type: 'string'
+                            },
+                            example: ['507f1f77bcf86cd799439012']
+                        },
+                        isActive: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        metadata: {
+                            type: 'object',
+                            example: { phone: '+1234567890' }
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        },
+                        updatedAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        }
+                    }
+                },
+                RoleResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            example: '507f1f77bcf86cd799439012'
+                        },
+                        name: {
+                            type: 'string',
+                            example: 'admin'
+                        },
+                        description: {
+                            type: 'string',
+                            example: 'Administrator role'
+                        },
+                        permissions: {
+                            type: 'array',
+                            items: {
+                                type: 'string'
+                            },
+                            example: ['507f1f77bcf86cd799439013']
+                        },
+                        isActive: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        },
+                        updatedAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        }
+                    }
+                },
+                PermissionResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            example: '507f1f77bcf86cd799439013'
+                        },
+                        name: {
+                            type: 'string',
+                            example: 'users:read'
+                        },
+                        description: {
+                            type: 'string',
+                            example: 'Read user data'
+                        },
+                        resource: {
+                            type: 'string',
+                            example: 'users'
+                        },
+                        action: {
+                            type: 'string',
+                            example: 'read'
+                        },
+                        isActive: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        },
+                        updatedAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        }
+                    }
+                },
+                PaginatedResponse: {
+                    type: 'object',
+                    properties: {
+                        success: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        data: {
+                            type: 'array',
+                            items: {
+                                type: 'object'
+                            }
+                        },
+                        pagination: {
+                            type: 'object',
+                            properties: {
+                                page: {
+                                    type: 'integer',
+                                    example: 1
+                                },
+                                limit: {
+                                    type: 'integer',
+                                    example: 20
+                                },
+                                total: {
+                                    type: 'integer',
+                                    example: 100
+                                },
+                                totalPages: {
+                                    type: 'integer',
+                                    example: 5
+                                },
+                                hasNext: {
+                                    type: 'boolean',
+                                    example: true
+                                },
+                                hasPrev: {
+                                    type: 'boolean',
+                                    example: false
+                                }
+                            }
+                        }
+                    }
+                },
+                SessionStatusResponse: {
+                    type: 'object',
+                    properties: {
+                        success: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                exists: {
+                                    type: 'boolean',
+                                    example: true
+                                },
+                                fileCount: {
+                                    type: 'integer',
+                                    example: 15
+                                },
+                                files: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'string'
+                                    },
+                                    example: ['creds.json', 'session-123.json']
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
     },
-    apis: ['./src/routes/*.js', './src/server.js']
+    apis: ['./src/routes/*.js', './src/server.js', './src/users/routes/*.js', './src/roles/routes/*.js', './src/permissions/routes/*.js']
 };
 
 const swaggerSpec = swaggerJsdoc(options);

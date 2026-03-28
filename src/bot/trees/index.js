@@ -3,7 +3,7 @@
  * Load all trees from the trees folder
  * Each tree is in its own file for easy maintenance
  */
-import { ConversationEngine } from '../../core/ConversationTree.js';
+import { ConversationEngine } from '@/core/ConversationTree.js';
 
 // Import all trees
 import { ventasTree } from './ventas.js';

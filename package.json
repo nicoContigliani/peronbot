@@ -4,11 +4,11 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "concurrently \"node src/index.js\" \"cd dashboard && npm start\"",
-    "dev": "concurrently \"node --watch src/index.js\" \"cd dashboard && npm start\"",
-    "dashboard": "cd dashboard && npm start",
-    "server": "node src/server.js",
-    "install:all": "npm install && cd dashboard && npm install"
+    "start": "node --loader ./loader.js src/index.js",
+    "dev": "node --loader ./loader.js --watch src/index.js",
+    "server": "node --loader ./loader.js src/server.js",
+    "clear-session": "node --loader ./loader.js clearSession.js",
+    "session:status": "node --loader ./loader.js clearSession.js --status"
   },
   "keywords": [
     "whatsapp",

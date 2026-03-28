@@ -7,10 +7,10 @@
  */
 import 'dotenv/config';
 import pino from 'pino';
-import config from './config/env.js';
-import { connectDB, closeDB } from './database/db.js';
-import BotClient from './bot/BotClient.js';
-import { initializeConversationTrees } from './bot/handlers/messageHandler.js';
+import config from '@/config/env.js';
+import { connectDB, closeDB } from '@/database/db.js';
+import BotClient from '@/bot/BotClient.js';
+import { initializeConversationTrees } from '@/bot/handlers/messageHandler.js';
 
 // Configure logger
 const logger = pino({

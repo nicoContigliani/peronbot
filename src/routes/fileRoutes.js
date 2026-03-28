@@ -12,10 +12,10 @@ import {
     downloadFromSupabase,
     listSupabaseFiles,
     deleteFromSupabase
-} from '../fileProcessor/index.js';
-import { isAuthenticated } from '../middleware/index.js';
+} from '@/services/fileProcessor/index.js';
+import { isAuthenticated } from '@/middleware/index.js';
 import pino from 'pino';
-import config from '../config/env.js';
+import config from '@/config/env.js';
 
 const logger = pino({ level: config.logging.level });
 const router = Router();

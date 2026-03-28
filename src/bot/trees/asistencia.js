@@ -2,7 +2,7 @@
  * Conversation Tree: Asistencia (Support)
  * This tree handles all support-related conversations
  */
-import { ConversationTree, NodeType } from '../../core/ConversationTree.js';
+import { ConversationTree, NodeType } from '@/core/ConversationTree.js';
 
 export const asistenciaTree = new ConversationTree('asistencia', 'Customer support conversation flow')
     // Root - Main menu
