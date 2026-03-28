@@ -382,16 +382,23 @@ export class ConversationEngine {
         // Process based on node type
         switch (currentNode.type) {
             case NodeType.MENU:
-                // Check if input matches an option key
-                const option = currentNode.options?.[input.toLowerCase()];
+                // Check if input matches an option key (supports numbers and text)
+                // First try exact match, then try lowercase
+                let option = currentNode.options?.[input];
+                if (!option) {
+                    option = currentNode.options?.[input.toLowerCase()];
+                }
                 if (option) {
                     nextNodeId = option.next;
-                    state.context.selectedOption = input.toLowerCase();
+                    // Store the selected option key for conditions
+                    state.context.selectedOption = input;
                 } else {
                     // Invalid option, stay on current node
+                    // Show available options
+                    const availableOptions = Object.keys(currentNode.options || {}).join(', ');
                     return {
                         ...currentNode,
-                        error: 'Invalid option. Please choose from the available options.',
+                        error: `Opción inválida. Por favor elegí: ${availableOptions}`,
                         retry: true
                     };
                 }

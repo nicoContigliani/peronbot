@@ -385,14 +385,16 @@ async function sendNodeMessage(sock, jid, nodeData) {
             break;
 
         case NodeType.MENU:
-            // Format menu as text with options
+            // Format menu as text with numbered options for easy selection
             let menuText = text + '\n\n';
-            for (const [key, option] of Object.entries(nodeData.options)) {
-                const optionText = typeof option.text === 'function' 
-                    ? option.text(context) 
-                    : option.text;
-                menuText += `${key}. ${optionText}\n`;
+            const optionKeys = Object.keys(nodeData.options || {});
+            for (const key of optionKeys) {
+                const optionText = typeof nodeData.options[key].text === 'function' 
+                    ? nodeData.options[key].text(context) 
+                    : nodeData.options[key].text;
+                menuText += `*${key}.* ${optionText}\n`;
             }
+            menuText += '\n💡 Escribí el número para seleccionar';
             await sock.sendMessage(jid, { text: menuText });
             break;
 
