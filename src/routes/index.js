@@ -8,3 +8,4 @@ export { userRoutes } from '../apiservices/users/index.js';
 export { roleRoutes } from '../apiservices/roles/index.js';
 export { permissionRoutes } from '../apiservices/permissions/index.js';
 export { productRoutes } from '../apiservices/products/index.js';
+export { default as vehicleRoutes } from '../apiservices/vehicles/index.js';

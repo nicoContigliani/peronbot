@@ -407,11 +407,128 @@ const options = {
                             }
                         }
                     }
+                },
+                WhatsAppStatusResponse: {
+                    type: 'object',
+                    properties: {
+                        success: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        data: {
+                            type: 'object',
+                            properties: {
+                                isConnected: {
+                                    type: 'boolean',
+                                    example: true
+                                },
+                                provider: {
+                                    type: 'string',
+                                    example: 'baileys'
+                                },
+                                status: {
+                                    type: 'string',
+                                    example: 'connected'
+                                }
+                            }
+                        }
+                    }
+                },
+                SendMessageRequest: {
+                    type: 'object',
+                    required: ['jid', 'text'],
+                    properties: {
+                        jid: {
+                            type: 'string',
+                            example: '5491112345678@s.whatsapp.net',
+                            description: 'Recipient WhatsApp JID'
+                        },
+                        text: {
+                            type: 'string',
+                            example: 'Hello!',
+                            description: 'Message text'
+                        }
+                    }
+                },
+                SendMessageResponse: {
+                    type: 'object',
+                    properties: {
+                        success: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        messageId: {
+                            type: 'string',
+                            example: 'msg_123456'
+                        },
+                        error: {
+                            type: 'string',
+                            example: 'Error message'
+                        }
+                    }
+                },
+                VehicleResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            example: '507f1f77bcf86cd799439011'
+                        },
+                        placa: {
+                            type: 'string',
+                            example: 'ABC123'
+                        },
+                        tipo: {
+                            type: 'string',
+                            enum: ['moto', 'auto', 'camioneta', 'bicicleta', 'camion', 'otro'],
+                            example: 'moto'
+                        },
+                        marca: {
+                            type: 'string',
+                            example: 'Honda'
+                        },
+                        modelo: {
+                            type: 'string',
+                            example: 'CB190R'
+                        },
+                        color: {
+                            type: 'string',
+                            example: 'Negro'
+                        },
+                        capacidad: {
+                            type: 'number',
+                            example: 50
+                        },
+                        anio: {
+                            type: 'number',
+                            example: 2023
+                        },
+                        repartidor_id: {
+                            type: 'string',
+                            example: '507f1f77bcf86cd799439011'
+                        },
+                        observaciones: {
+                            type: 'string',
+                            example: 'Vehículo en buen estado'
+                        },
+                        isActive: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        },
+                        updatedAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        }
+                    }
                 }
             }
         }
     },
-    apis: ['./src/routes/*.js', './src/server.js', './src/users/routes/*.js', './src/roles/routes/*.js', './src/permissions/routes/*.js']
+    apis: ['./src/routes/*.js', './src/server.js', './src/apiservices/users/routes/*.js', './src/apiservices/roles/routes/*.js', './src/apiservices/permissions/routes/*.js', './src/apiservices/products/routes/*.js', './src/apiservices/repartidores/routes/*.js', './src/apiservices/vehicles/routes/*.js']
 };
 
 const swaggerSpec = swaggerJsdoc(options);

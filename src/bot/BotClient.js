@@ -52,7 +52,7 @@ export class BotClient {
             logger.info(`Using Baileys version: ${version.join('.')} (latest: ${isLatest})`);
 
             // Load or create session
-            let { state, saveCreds } = await useMultiFileAuthState(config.sessionFolder);
+            let { state, saveCreds } = await useMultiFileAuthState(config.whatsapp.baileys.sessionFolder);
             
             // Check if session is valid, if not delete and recreate
             if (!state.creds || !state.creds.me) {
@@ -60,14 +60,14 @@ export class BotClient {
                 // Delete old session files
                 const fs = await import('fs');
                 const path = await import('path');
-                const sessionPath = path.resolve(config.sessionFolder);
+                const sessionPath = path.resolve(config.whatsapp.baileys.sessionFolder);
                 
                 if (fs.existsSync(sessionPath)) {
                     fs.rmSync(sessionPath, { recursive: true, force: true });
                 }
                 
                 // Create fresh session
-                ({ state, saveCreds } = await useMultiFileAuthState(config.sessionFolder));
+                ({ state, saveCreds } = await useMultiFileAuthState(config.whatsapp.baileys.sessionFolder));
             }
             
             // Create socket with optimized settings
@@ -178,7 +178,7 @@ export class BotClient {
             } else if (!shouldReconnect) {
                 console.log('\n🛑 Logged out or session invalid.');
                 console.log('   Delete the session folder to re-authenticate:');
-                console.log(`   rm -rf ${config.sessionFolder}\n`);
+                console.log(`   rm -rf ${config.whatsapp.baileys.sessionFolder}\n`);
                 await this.shutdown();
             } else {
                 console.log('\n❌ Max reconnection attempts reached.');

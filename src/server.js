@@ -6,7 +6,7 @@
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from '@/config/swagger.js';
-import { fileRoutes, sessionRoutes, userRoutes, roleRoutes, permissionRoutes, productRoutes } from '@/routes/index.js';
+import { fileRoutes, sessionRoutes, userRoutes, roleRoutes, permissionRoutes, productRoutes, vehicleRoutes } from '@/routes/index.js';
 import { clerkAuthMiddleware } from '@/middleware/index.js';
 import pino from 'pino';
 import config from '@/config/env.js';
@@ -43,6 +43,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/permissions', permissionRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/vehicles', vehicleRoutes);
 
 /**
  * @swagger
