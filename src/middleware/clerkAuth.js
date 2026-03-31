@@ -11,77 +11,53 @@ const logger = pino({ level: config.logging.level });
 
 /**
  * Clerk middleware for Express
- * Adds Clerk authentication to the request object
+ * Now optional - passes through without requiring authentication
  */
-export const clerkAuthMiddleware = clerkMiddleware();
+export const clerkAuthMiddleware = (req, res, next) => {
+    // Clerk authentication is now optional
+    // Just pass through without checking authentication
+    next();
+};
 
 /**
  * Require authentication middleware
- * Protects routes that require user authentication
+ * Now optional - passes through without requiring authentication
  */
-export const requireAuthMiddleware = requireAuth();
+export const requireAuthMiddleware = (req, res, next) => {
+    // Clerk authentication is now optional
+    // Just pass through without checking authentication
+    next();
+};
 
 /**
  * Optional authentication middleware
- * Adds user info if authenticated, but doesn't require it
+ * Now optional - passes through without requiring authentication
  */
-export const optionalAuthMiddleware = clerkMiddleware({
-    debug: false,
-    requireAuth: false
-});
+export const optionalAuthMiddleware = (req, res, next) => {
+    // Clerk authentication is now optional
+    // Just pass through without checking authentication
+    next();
+};
 
 /**
  * Custom middleware to check if user is authenticated
- * Returns 401 if not authenticated
+ * Now optional - passes through without requiring authentication
  */
 export const isAuthenticated = (req, res, next) => {
-    const auth = req.auth;
-    
-    if (!auth || !auth.userId) {
-        logger.warn('Unauthorized access attempt');
-        return res.status(401).json({
-            success: false,
-            error: 'Authentication required',
-            message: 'You must be logged in to access this resource'
-        });
-    }
-    
-    logger.info(`Authenticated user: ${auth.userId}`);
+    // Clerk authentication is now optional
+    // Just pass through without checking authentication
     next();
 };
 
 /**
  * Custom middleware to check if user has specific role
+ * Now optional - passes through without requiring authentication
  * @param {string|Array} roles - Required role(s)
  */
 export const hasRole = (roles) => {
     return (req, res, next) => {
-        const auth = req.auth;
-        
-        if (!auth || !auth.userId) {
-            return res.status(401).json({
-                success: false,
-                error: 'Authentication required'
-            });
-        }
-        
-        // Check if user has required role
-        const userRoles = auth.sessionClaims?.metadata?.roles || [];
-        const requiredRoles = Array.isArray(roles) ? roles : [roles];
-        
-        const hasRequiredRole = requiredRoles.some(role => 
-            userRoles.includes(role)
-        );
-        
-        if (!hasRequiredRole) {
-            logger.warn(`User ${auth.userId} lacks required role: ${requiredRoles.join(', ')}`);
-            return res.status(403).json({
-                success: false,
-                error: 'Insufficient permissions',
-                message: `You need one of these roles: ${requiredRoles.join(', ')}`
-            });
-        }
-        
+        // Clerk authentication is now optional
+        // Just pass through without checking roles
         next();
     };
 };

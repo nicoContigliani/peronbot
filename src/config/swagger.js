@@ -21,7 +21,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:3000',
+                url: process.env.BACKEND_DOMAIN || 'http://localhost:8000',
                 description: 'Development server'
             }
         ],
@@ -464,6 +464,78 @@ const options = {
                         error: {
                             type: 'string',
                             example: 'Error message'
+                        }
+                    }
+                },
+                ConnectionResponse: {
+                    type: 'object',
+                    properties: {
+                        id: {
+                            type: 'string',
+                            example: '507f1f77bcf86cd799439011'
+                        },
+                        name: {
+                            type: 'string',
+                            example: 'WhatsApp Business'
+                        },
+                        provider: {
+                            type: 'string',
+                            enum: ['baileys', 'business-api'],
+                            example: 'baileys'
+                        },
+                        phoneNumber: {
+                            type: 'string',
+                            example: '+1234567890'
+                        },
+                        webhookUrl: {
+                            type: 'string',
+                            example: 'https://example.com/webhook'
+                        },
+                        status: {
+                            type: 'string',
+                            enum: ['connected', 'disconnected', 'connecting', 'error'],
+                            example: 'connected'
+                        },
+                        isActive: {
+                            type: 'boolean',
+                            example: true
+                        },
+                        metadata: {
+                            type: 'object',
+                            example: { "key": "value" }
+                        },
+                        createdAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        },
+                        updatedAt: {
+                            type: 'string',
+                            format: 'date-time'
+                        }
+                    }
+                },
+                ConnectionStatsResponse: {
+                    type: 'object',
+                    properties: {
+                        connected: {
+                            type: 'integer',
+                            example: 5
+                        },
+                        disconnected: {
+                            type: 'integer',
+                            example: 10
+                        },
+                        connecting: {
+                            type: 'integer',
+                            example: 2
+                        },
+                        error: {
+                            type: 'integer',
+                            example: 1
+                        },
+                        total: {
+                            type: 'integer',
+                            example: 18
                         }
                     }
                 },

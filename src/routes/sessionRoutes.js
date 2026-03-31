@@ -4,7 +4,7 @@
  */
 
 import { Router } from 'express';
-import { checkSessionStatus, clearSession, clearSessionKeepCredentials } from '@/sessionManager.js';
+import { checkSessionStatus, clearSession, clearSessionKeepCredentials } from '@/../sessionManager.js';
 import { isAuthenticated } from '@/middleware/index.js';
 import pino from 'pino';
 import config from '@/config/env.js';
