@@ -94,6 +94,11 @@ export async function sendBroadcast(req, res) {
 
         logger.info(`Starting broadcast for ${clients.length} clients`);
         console.log('🔍 [BROADCAST CONTROLLER] Starting to send messages to', clients.length, 'clients');
+        console.log('🔍 [BROADCAST CONTROLLER] Message options received:', {
+          hasMessageOptions: !!messageOptions && Object.keys(messageOptions).length > 0,
+          messageOptionsKeys: messageOptions ? Object.keys(messageOptions) : [],
+          messageOptions: messageOptions
+        });
 
         // Send messages to all clients
         const results = [];
@@ -117,11 +122,30 @@ export async function sendBroadcast(req, res) {
                 if (messageOptions && Object.keys(messageOptions).length > 0) {
                     // Send message with options (image, audio, contact, etc.)
                     console.log('🔍 [BROADCAST CONTROLLER] Sending with messageOptions:', Object.keys(messageOptions));
-                    result = await BotClient.sendMessage(jid, messageOptions);
+                    // Use sock.sendMessage directly for messageOptions
+                    if (!BotClient.sock) {
+                        throw new Error('Bot socket not available');
+                    }
+                    // Replace {{clientName}} placeholder with client's name
+                    const clientName = client.name || 'Cliente';
+                    const personalizedMessageOptions = JSON.parse(JSON.stringify(messageOptions));
+                    
+                    // Replace placeholders in text or caption
+                    if (personalizedMessageOptions.text) {
+                        personalizedMessageOptions.text = personalizedMessageOptions.text.replace(/{{clientName}}/g, clientName);
+                    }
+                    if (personalizedMessageOptions.caption) {
+                        personalizedMessageOptions.caption = personalizedMessageOptions.caption.replace(/{{clientName}}/g, clientName);
+                    }
+                    
+                    result = await BotClient.sock.sendMessage(jid, personalizedMessageOptions);
                 } else {
                     // Send plain text message
                     console.log('🔍 [BROADCAST CONTROLLER] Sending plain text message');
-                    result = await BotClient.sendMessage(jid, { text: message });
+                    // Replace {{clientName}} placeholder with client's name
+                    const clientName = client.name || 'Cliente';
+                    const personalizedMessage = message.replace(/{{clientName}}/g, clientName);
+                    result = await BotClient.sendMessage(jid, personalizedMessage);
                 }
                 
                 results.push({
